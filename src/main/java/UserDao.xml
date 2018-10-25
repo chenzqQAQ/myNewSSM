@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youma.Dao.UserDao">
+    <insert id="userAdd" useGeneratedKeys="true" keyProperty="userId" parameterType="user">
+        insert users (userName, userPassword)
+        values (#{userName}, #{userPassword})
+    </insert>
+    <update id="userUpdate" parameterType="user">
+        update users
+        set userPassword = #{userPassword}
+        where userID = #{userId}
+    </update>
+    <delete id="userDel" parameterType="int">
+        delete
+        from users
+        where userID = #{id}
+    </delete>
+    <delete id="userDelgt" parameterType="int">
+        delete
+        from users
+        where userID > #{id}
+    </delete>
+    <select id="userAll" resultType="user">
+        select userID, userPassword, userName
+        from users
+        where userID &lt;= 30
+        order by userID desc
+
+        limit #{param1},#{param2}
+    </select>
+    <select id="userFind" resultType="user">
+        select userID, userPassword, userName
+        from users
+        where userID = #{id}
+    </select>
+    <select id="userFinds" resultType="user">
+        select userID, userPassword, userName
+        from users
+        <where>
+            <if test="userId!=0">
+                userID=#{userId}
+            </if>
+            <if test="userName!=null and userName!=''">
+                <bind name="a" value="'%'+userName+'%'"/>
+                and userName like #{a}
+            </if>
+            <if test="userPassword!=null">
+                and userPassword like concat('%',#{userPassword},'%')
+            </if>
+        </where>
+        limit 0,5
+    </select>
+    <select id="userCount" resultType="java.lang.Integer">
+        select count(userID)
+        from users
+    </select>
+</mapper>
